@@ -1,5 +1,5 @@
-require('dotenv').config();
 const { searchIdea } = require("./agents/searchAgent");
+require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
@@ -37,22 +37,37 @@ const { getVerdict } = require('./agents/verdict');
 app.post('/debate', async (req, res) => {
     try {
         const { idea } = req.body;
+
+        const searchResults = await searchIdea(idea);
+        console.log(searchResults);
+
         if (!idea) return res.status(400).json({ error: "Idea is required" });
 
         // Round 1 - parallel
         const [skeptic1, optimist1] = await Promise.all([
-            getSkepticView(idea),
+            getSkepticView(
+                idea,
+                null,
+                searchResults
+            ),
             getOptimistView(idea)
         ]);
 
         // Round 2 - counter arguments, parallel
         const [skeptic2, optimist2] = await Promise.all([
-            getSkepticView(idea, optimist1),
+            getSkepticView(
+                idea,
+                optimist1,
+                searchResults
+            ),
             getOptimistView(idea, skeptic1)
         ]);
 
         // Round 3 - data insights
-        const dataInsights = await getDataInsights(idea);
+        const dataInsights = await getDataInsights(
+            idea,
+            searchResults
+        );
 
         // Final verdict
         const verdict = await getVerdict(idea, skeptic1, optimist1, skeptic2, optimist2, dataInsights);

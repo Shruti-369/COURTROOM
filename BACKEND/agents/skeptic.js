@@ -1,7 +1,11 @@
 const Groq = require('groq-sdk');
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
-async function getSkepticView(idea, previousArgument = null) {
+async function getSkepticView(
+    idea,
+    previousArgument = null,
+    searchResults
+) {
     const systemPrompt = `You are a harsh, realistic critic evaluating ideas. 
 Given an idea, list only risks, flaws, and challenges. Be specific, not generic. 
 Keep response to 3-4 sharp bullet points, no fluff.`;
