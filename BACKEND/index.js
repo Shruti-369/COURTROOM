@@ -1,10 +1,13 @@
 require('dotenv').config();
+const { searchIdea } = require("./agents/searchAgent");
+
 const express = require('express');
 const cors = require('cors');
-app.use(express.json());
 const Groq = require('groq-sdk');
 
-const app = express();
+const app = express();      // Pehle app banao
+
+app.use(cors());            // then use middleware 
 app.use(express.json());
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });

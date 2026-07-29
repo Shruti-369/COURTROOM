@@ -61,48 +61,68 @@ function scoreToTilt(skeptic, optimist) {
   return (clamped / 100) * 14; // degrees, max ~14deg
 }
 
+const BEAM_WIDTH = 220; // px, the horizontal line that tilts
+
 function Beam({ skeptic, optimist, active }) {
   const tilt = active ? scoreToTilt(skeptic, optimist) : 0;
+  const panDrop = 22; // how far a pan sinks at full tilt, in px
+
   return (
     <div className="flex flex-col items-center select-none" aria-hidden="true">
-      <div className="relative w-64 h-28">
-        {/* post */}
+      <div className="relative" style={{ width: BEAM_WIDTH + 60, height: 110 }}>
+        {/* vertical post — centered via left:50% + negative margin, never touched by rotate */}
         <div
-          className="absolute left-1/2 top-8 -translate-x-1/2 w-1.5 h-16 rounded-full"
-          style={{ background: "linear-gradient(180deg,#d4af37,#8a6d1a)" }}
+          className="absolute top-11 rounded-full"
+          style={{
+            left: "50%",
+            marginLeft: -3,
+            width: 6,
+            height: 60,
+            background: "linear-gradient(180deg,#d4af37,#8a6d1a)",
+          }}
         />
         {/* fulcrum cap */}
         <div
-          className="absolute left-1/2 top-6 -translate-x-1/2 w-3 h-3 rounded-full z-20"
-          style={{ background: "#f0d878", boxShadow: "0 0 10px #d4af3799" }}
+          className="absolute top-9 rounded-full z-20"
+          style={{ left: "50%", marginLeft: -7, width: 14, height: 14, background: "#f0d878", boxShadow: "0 0 10px #d4af3799" }}
         />
-        {/* beam */}
+        {/* beam — only transform applied is rotate, origin stays true center */}
         <div
-          className="absolute left-1/2 top-8 -translate-x-1/2 origin-center transition-transform duration-[1400ms] ease-out"
-          style={{ transform: `translateX(-50%) rotate(${tilt}deg)`, width: "100%" }}
+          className="absolute top-11 transition-transform duration-[1400ms] ease-out"
+          style={{
+            left: "50%",
+            marginLeft: -BEAM_WIDTH / 2,
+            width: BEAM_WIDTH,
+            transformOrigin: "center center",
+            transform: `rotate(${tilt}deg)`,
+          }}
         >
           <div
-            className="h-1 rounded-full mx-auto"
-            style={{ width: "224px", background: "linear-gradient(90deg,#7f1d1d,#d4af37,#14532d)" }}
+            className="h-1 rounded-full w-full"
+            style={{ background: "linear-gradient(90deg,#7f1d1d,#d4af37,#14532d)" }}
           />
           {/* left pan (skeptic) */}
           <div
-            className="absolute -left-3 top-1 flex items-center justify-center w-9 h-9 rounded-full border transition-transform duration-[1400ms]"
+            className="absolute top-1 flex items-center justify-center w-9 h-9 rounded-full border transition-transform duration-[1400ms]"
             style={{
+              left: 0,
+              marginLeft: -18,
               borderColor: "#7f1d1d",
               background: "radial-gradient(circle at 30% 30%, #3a1010, #1a0505)",
-              transform: `translateY(${tilt > 0 ? -tilt * 1.1 : Math.abs(tilt) * 1.1}px)`,
+              transform: `translateY(${tilt > 0 ? -tilt * (panDrop / 14) : Math.abs(tilt) * (panDrop / 14)}px)`,
             }}
           >
             <Swords size={15} color="#ef4444" />
           </div>
           {/* right pan (optimist) */}
           <div
-            className="absolute -right-3 top-1 flex items-center justify-center w-9 h-9 rounded-full border transition-transform duration-[1400ms]"
+            className="absolute top-1 flex items-center justify-center w-9 h-9 rounded-full border transition-transform duration-[1400ms]"
             style={{
+              right: 0,
+              marginRight: -18,
               borderColor: "#14532d",
               background: "radial-gradient(circle at 30% 30%, #103a1a, #051a0a)",
-              transform: `translateY(${tilt > 0 ? tilt * 1.1 : -Math.abs(tilt) * 1.1}px)`,
+              transform: `translateY(${tilt > 0 ? tilt * (panDrop / 14) : -Math.abs(tilt) * (panDrop / 14)}px)`,
             }}
           >
             <Shield size={15} color="#4ade80" />
