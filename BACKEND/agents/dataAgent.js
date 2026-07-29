@@ -7,15 +7,40 @@ Based on your knowledge, provide 3 realistic data points relevant to this idea
 (market size, competitor examples, industry trends). Be concise, factual-sounding, 
 label clearly as estimates if unsure.`;
 
+    const context = searchResults.results
+        .map(item => `
+Title: ${item.title}
+Content: ${item.content}
+Source: ${item.url}
+`)
+        .join("\n\n");
+
+    const userPrompt = `
+Idea:
+${idea}
+
+Web Research:
+${context}
+
+Summarize:
+- Market
+- Competitors
+- Trends
+- Risks
+- Opportunities
+`;
+
     const completion = await groq.chat.completions.create({
         model: "llama-3.3-70b-versatile",
         messages: [
             { role: "system", content: systemPrompt },
-            { role: "user", content: `Idea: "${idea}"` }
-        ],
+            { role: "user", content: userPrompt }
+        ]
     });
 
     return completion.choices[0].message.content;
 }
+
+
 
 module.exports = { getDataInsights };

@@ -1,3 +1,4 @@
 npm init -y
 npm install express groq-sdk dotenv cors
 npm install @tavily/core
+npm install mongoose
