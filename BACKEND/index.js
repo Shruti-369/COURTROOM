@@ -24,6 +24,50 @@ app.get('/test', async (req, res) => {
     }
 });
 
+const { getSkepticView } = require('./agents/skeptic');
+const { getOptimistView } = require('./agents/optimist');
+const { getDataInsights } = require('./agents/dataAgent');
+const { getVerdict } = require('./agents/verdict');
+
+app.post('/debate', async (req, res) => {
+    try {
+        const { idea } = req.body;
+        if (!idea) return res.status(400).json({ error: "Idea is required" });
+
+        // Round 1 - parallel
+        const [skeptic1, optimist1] = await Promise.all([
+            getSkepticView(idea),
+            getOptimistView(idea)
+        ]);
+
+        // Round 2 - counter arguments, parallel
+        const [skeptic2, optimist2] = await Promise.all([
+            getSkepticView(idea, optimist1),
+            getOptimistView(idea, skeptic1)
+        ]);
+
+        // Round 3 - data insights
+        const dataInsights = await getDataInsights(idea);
+
+        // Final verdict
+        const verdict = await getVerdict(idea, skeptic1, optimist1, skeptic2, optimist2, dataInsights);
+
+        res.json({
+            idea,
+            rounds: {
+                round1: { skeptic: skeptic1, optimist: optimist1 },
+                round2: { skeptic: skeptic2, optimist: optimist2 },
+                dataInsights
+            },
+            verdict
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: err.message });
+    }
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
 });
