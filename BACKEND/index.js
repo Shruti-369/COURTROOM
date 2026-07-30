@@ -1,4 +1,5 @@
-const protect = require("./middleware/authMiddleware");
+const protect = require("./middleware/authMiddleware"); //middleware
+const Debate = require("../models/Debate");
 const authRoutes = require("./routes/authRoutes");
 const { searchIdea } = require("./agents/searchAgent");
 require('dotenv').config();
