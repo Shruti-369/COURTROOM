@@ -94,6 +94,7 @@ app.post("/debate", protect, async (req, res) => {
             });
         } catch (err) {
             console.error("Failed to save debate:", err);
+            console.error(err.stack);
         }
 
         res.json({
