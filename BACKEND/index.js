@@ -81,7 +81,8 @@ app.post("/debate", protect, async (req, res) => {
 
         // Final verdict
         const verdict = await getVerdict(idea, skeptic1, optimist1, skeptic2, optimist2, dataInsights);
-
+        console.log("REQ USER =", req.user);
+        console.log("VERDICT =", verdict);
         try {
             await Debate.create({
                 userId: req.user.id,
@@ -92,6 +93,7 @@ app.post("/debate", protect, async (req, res) => {
                 topRisks: verdict.top_risks,
                 topOpportunities: verdict.top_opportunities,
             });
+            console.log("Debate saved successfully!");
         } catch (err) {
             console.error("Failed to save debate:", err);
             console.error(err.stack);
@@ -110,6 +112,23 @@ app.post("/debate", protect, async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: err.message });
+    }
+});
+
+app.get("/debate/history", protect, async (req, res) => {
+    try {
+        const debates = await Debate.find({
+            userId: req.user.id
+        }).sort({ createdAt: -1 });
+
+        res.status(200).json(debates);
+
+    } catch (err) {
+        console.error("History fetch error:", err);
+
+        res.status(500).json({
+            error: err.message
+        });
     }
 });
 
