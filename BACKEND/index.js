@@ -1,3 +1,4 @@
+const protect = require("./middleware/authMiddleware");
 const authRoutes = require("./routes/authRoutes");
 const { searchIdea } = require("./agents/searchAgent");
 require('dotenv').config();
@@ -40,7 +41,7 @@ const { getOptimistView } = require('./agents/optimist');
 const { getDataInsights } = require('./agents/dataAgent');
 const { getVerdict } = require('./agents/verdict');
 
-app.post('/debate', async (req, res) => {
+app.post("/debate", protect, async (req, res) => {
     try {
         const { idea } = req.body;
 
