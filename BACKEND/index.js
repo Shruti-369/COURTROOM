@@ -1,5 +1,5 @@
 const protect = require("./middleware/authMiddleware"); //middleware
-const Debate = require("../models/Debate");
+const Debate = require("./models/Debate");
 const authRoutes = require("./routes/authRoutes");
 const { searchIdea } = require("./agents/searchAgent");
 require('dotenv').config();
@@ -46,10 +46,12 @@ app.post("/debate", protect, async (req, res) => {
     try {
         const { idea } = req.body;
 
+        if (!idea) {
+            return res.status(400).json({ error: "Idea is required" });
+        }
+
         const searchResults = await searchIdea(idea);
         console.log(searchResults);
-
-        if (!idea) return res.status(400).json({ error: "Idea is required" });
 
         // Round 1 - parallel
         const [skeptic1, optimist1] = await Promise.all([
@@ -79,6 +81,15 @@ app.post("/debate", protect, async (req, res) => {
 
         // Final verdict
         const verdict = await getVerdict(idea, skeptic1, optimist1, skeptic2, optimist2, dataInsights);
+
+        await Debate.create({
+            userId: req.user.id,
+            idea,
+            verdict: verdict.decision,
+            confidence: verdict.confidence,
+            topRisks: verdict.topRisks,
+            topOpportunities: verdict.topOpportunities,
+        });
 
         res.json({
             idea,
