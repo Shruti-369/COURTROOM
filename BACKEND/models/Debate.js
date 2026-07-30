@@ -23,6 +23,11 @@ const debateSchema = new mongoose.Schema(
             required: true,
         },
 
+        summary: {
+            type: String,
+            default: "",
+        },
+
         topRisks: {
             type: [String],
             default: [],
@@ -33,9 +38,7 @@ const debateSchema = new mongoose.Schema(
             default: [],
         },
     },
-    {
-        timestamps: true,
-    }
+    { timestamps: true }
 );
 
 module.exports = mongoose.model("Debate", debateSchema);

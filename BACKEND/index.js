@@ -82,14 +82,19 @@ app.post("/debate", protect, async (req, res) => {
         // Final verdict
         const verdict = await getVerdict(idea, skeptic1, optimist1, skeptic2, optimist2, dataInsights);
 
-        await Debate.create({
-            userId: req.user.id,
-            idea,
-            verdict: verdict.decision,
-            confidence: verdict.confidence,
-            topRisks: verdict.topRisks,
-            topOpportunities: verdict.topOpportunities,
-        });
+        try {
+            await Debate.create({
+                userId: req.user.id,
+                idea,
+                verdict: verdict.decision,
+                confidence: verdict.confidence,
+                summary: verdict.summary,
+                topRisks: verdict.top_risks,
+                topOpportunities: verdict.top_opportunities,
+            });
+        } catch (err) {
+            console.error("Failed to save debate:", err);
+        }
 
         res.json({
             idea,
