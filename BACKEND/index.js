@@ -1,14 +1,20 @@
+const authRoutes = require("./routes/authRoutes");
 const { searchIdea } = require("./agents/searchAgent");
 require('dotenv').config();
 
+const connectDB = require("./config/db");
 const express = require('express');
 const cors = require('cors');
 const Groq = require('groq-sdk');
+
+connectDB();
 
 const app = express();      // Pehle app banao
 
 app.use(cors());            // then use middleware 
 app.use(express.json());
+
+app.use("/api/auth", authRoutes);
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
