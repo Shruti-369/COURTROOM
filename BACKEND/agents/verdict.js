@@ -11,8 +11,9 @@ async function getVerdict(
     memoryContext
 ) {
     const systemPrompt = `Evaluate the idea objectively.
-
+Review all available evidence before making a final judgement.
 Do NOT assume every idea is good.
+You must remain unbiased.
 
 Choose:
 - Go → if the idea is feasible, valuable, and has strong potential.
