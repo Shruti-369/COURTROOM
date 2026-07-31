@@ -154,6 +154,62 @@ app.get("/debate/history", protect, async (req, res) => {
     }
 });
 
+app.get("/dashboard", protect, async (req, res) => {
+    try {
+
+        const debates = await Debate.find({
+            userId: req.user.id
+        });
+        const totalIdeas = debates.length;
+
+        const goIdeas = debates.filter(
+            debate => debate.verdict === "Go"
+        ).length;
+
+        const conditionalIdeas = debates.filter(
+            debate => debate.verdict === "Conditional"
+        ).length;
+
+        const noGoIdeas = debates.filter(
+            debate => debate.verdict === "No-Go"
+        ).length;
+        const averageConfidence =
+            totalIdeas === 0
+                ? 0
+                : Math.round(
+                    debates.reduce(
+                        (sum, debate) => sum + debate.confidence,
+                        0
+                    ) / totalIdeas
+                );
+        const lastIdea = await Debate.findOne({
+            userId: req.user.id
+        })
+            .sort({ createdAt: -1 });
+        res.json({
+            totalIdeas,
+            goIdeas,
+            conditionalIdeas,
+            noGoIdeas,
+            averageConfidence,
+
+            lastIdea: lastIdea
+                ? {
+                    idea: lastIdea.idea,
+                    verdict: lastIdea.verdict,
+                    confidence: lastIdea.confidence,
+                    createdAt: lastIdea.createdAt
+                }
+                : null
+        });
+
+    } catch (err) {
+        res.status(500).json({
+            error: err.message
+        });
+    }
+});
+
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
 });
