@@ -51,15 +51,18 @@ app.post("/debate", protect, async (req, res) => {
             return res.status(400).json({ error: "Idea is required" });
         }
         const previousDebates = await getMemory(req.user.id);
-        const memoryContext = previousDebates
-            .map((debate, index) => `
-                ${index + 1}.
-                Idea: ${debate.idea}
-                Verdict: ${debate.verdict}
-                Confidence: ${debate.confidence}
-                Summary: ${debate.summary}
-                `)
-            .join("\n");
+        const memoryContext =
+            previousDebates.length > 0
+                ? previousDebates
+                    .map((debate, index) => `
+                        ${index + 1}.
+                        Idea: ${debate.idea}
+                        Verdict: ${debate.verdict}
+                        Confidence: ${debate.confidence}
+                        Summary: ${debate.summary}
+                        `)
+                    .join("\n")
+                : "No previous startup evaluations found.";
         console.log(memoryContext);
 
         const searchResults = await searchIdea(idea);
@@ -101,8 +104,7 @@ app.post("/debate", protect, async (req, res) => {
             dataInsights,
             memoryContext
         );
-        console.log("REQ USER =", req.user);
-        console.log("VERDICT =", verdict);
+
         try {
             await Debate.create({
                 userId: req.user.id,
