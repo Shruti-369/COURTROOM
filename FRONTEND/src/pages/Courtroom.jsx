@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Scale, Swords, Shield, TrendingUp, TrendingDown, Gavel, Send, FileSearch, ScrollText, ArrowLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { api } from "../context/AuthContext";
+import { api, apiRoot } from "../context/AuthContext";
 
 // ---------------------------------------------------------------------------
 // THE COURTROOM — an AI decision-debate engine
@@ -352,8 +352,7 @@ export default function Courtroom() {
 
         let data;
         try {
-            // NOTE: adjust this path if your debateRoutes mounts creation elsewhere
-            const res = await api.post("/debates", { idea, category });
+            const res = await apiRoot.post("/debate", { idea, category });
             data = res.data;
         } catch (e) {
             // Backend not reachable — fall back to a demo transcript so the room
