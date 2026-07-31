@@ -1,13 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
-import axios from "axios";
-
 const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
 const AuthContext = createContext(null);
 
-// Axios instance that automatically attaches the auth token to every request
 export const api = axios.create({ baseURL: API_BASE });
 api.interceptors.request.use((config) => {
     const token = localStorage.getItem("courtroom_token");
@@ -15,8 +11,6 @@ api.interceptors.request.use((config) => {
     return config;
 });
 
-// Some routes (like /debate) are mounted directly on the root app in index.js,
-// not under /api — this instance targets the server root for those.
 export const apiRoot = axios.create({ baseURL: import.meta.env.VITE_API_URL });
 apiRoot.interceptors.request.use((config) => {
     const token = localStorage.getItem("courtroom_token");
@@ -39,7 +33,6 @@ export function AuthProvider({ children }) {
     async function login(email, password) {
         setLoading(true);
         try {
-            // NOTE: adjust this path if your authController mounts login elsewhere
             const res = await api.post("/auth/login", { email, password });
             localStorage.setItem("courtroom_token", res.data.token);
             setUser(res.data.user);
