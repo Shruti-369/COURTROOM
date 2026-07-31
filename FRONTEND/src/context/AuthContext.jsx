@@ -1,8 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
+import React, { createContext, useContext, useState, useEffect } from "react";
+import axios from "axios";
+
 const API_BASE = `${import.meta.env.VITE_API_URL}/api`;
-export const apiRoot = axios.create({ baseURL: import.meta.env.VITE_API_URL });
 const AuthContext = createContext(null);
 
 // Axios instance that automatically attaches the auth token to every request
