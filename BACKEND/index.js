@@ -41,6 +41,7 @@ const { getSkepticView } = require('./agents/skeptic');
 const { getOptimistView } = require('./agents/optimist');
 const { getDataInsights } = require('./agents/dataAgent');
 const { getVerdict } = require('./agents/verdict');
+const { getMemory } = require("./agents/memoryAgent");
 
 app.post("/debate", protect, async (req, res) => {
     try {
@@ -49,6 +50,8 @@ app.post("/debate", protect, async (req, res) => {
         if (!idea) {
             return res.status(400).json({ error: "Idea is required" });
         }
+        const previousDebates = await getMemory(req.user.id);
+        console.log(previousDebates);
 
         const searchResults = await searchIdea(idea);
         console.log(searchResults);
