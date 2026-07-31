@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Scale, Swords, Shield, TrendingUp, TrendingDown, Gavel, Send, FileSearch, ScrollText, ArrowLeft } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Scale, Swords, Shield, TrendingUp, TrendingDown, Gavel, Send, FileSearch, ScrollText, ArrowLeft, CheckCircle2, XCircle, AlertCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { api, apiRoot } from "../context/AuthContext";
 
@@ -250,6 +251,10 @@ function ScoreBar({ label, value, color }) {
 function Verdict({ v, visible }) {
     if (!v) return null;
     const decisionColor = v.decision === "Go" ? "#4ade80" : v.decision === "No-Go" ? "#ef4444" : "#d4af37";
+    const DecisionIcon = v.decision === "Go" ? CheckCircle2 : v.decision === "No-Go" ? XCircle : AlertCircle;
+    const decisionLine =
+        v.decision === "Go" ? "Case cleared for action." : v.decision === "No-Go" ? "The case does not hold up." : "Proceed — but only with eyes open.";
+
     return (
         <div
             className={`relative rounded-2xl border p-7 mt-2 transition-all duration-1000 ${visible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-6 scale-[0.98]"
@@ -257,7 +262,7 @@ function Verdict({ v, visible }) {
             style={{
                 borderColor: "#8a6d1a77",
                 background: "linear-gradient(180deg, #16130a 0%, #0b0b0d 100%)",
-                boxShadow: visible ? "0 0 50px -12px #d4af3744" : "none",
+                boxShadow: visible ? `0 0 60px -14px ${decisionColor}66` : "none",
             }}
         >
             <div className="absolute -top-4 left-7 px-3 py-1 rounded-full flex items-center gap-1.5" style={{ background: "#0b0b0d", border: "1px solid #d4af3766" }}>
@@ -267,16 +272,56 @@ function Verdict({ v, visible }) {
 
             <div className="flex items-start justify-between flex-wrap gap-4 mt-2">
                 <div>
-                    <div className="text-3xl font-bold" style={{ color: decisionColor, fontFamily: "Fraunces, serif" }}>
-                        {v.decision}
-                    </div>
-                    <p className="text-[13.5px] mt-2 max-w-md leading-relaxed" style={{ color: "#c9c7c0" }}>
+                    <AnimatePresence>
+                        {visible && (
+                            <motion.div
+                                key={v.decision}
+                                initial={{ opacity: 0, scale: 2.2, rotate: -8 }}
+                                animate={{ opacity: 1, scale: 1, rotate: -3 }}
+                                transition={{ type: "spring", stiffness: 260, damping: 14, delay: 0.15 }}
+                                className="flex items-center gap-2.5"
+                                style={{ transformOrigin: "left center" }}
+                            >
+                                <motion.div
+                                    initial={{ scale: 0 }}
+                                    animate={{ scale: 1 }}
+                                    transition={{ delay: 0.35, type: "spring", stiffness: 400, damping: 12 }}
+                                >
+                                    <DecisionIcon size={30} color={decisionColor} strokeWidth={2.2} />
+                                </motion.div>
+                                <span
+                                    className="text-4xl font-bold tracking-tight"
+                                    style={{ color: decisionColor, fontFamily: "Fraunces, serif", textShadow: `0 0 30px ${decisionColor}55` }}
+                                >
+                                    {v.decision}
+                                </span>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                    <motion.p
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: visible ? 1 : 0 }}
+                        transition={{ delay: 0.6, duration: 0.5 }}
+                        className="text-xs uppercase tracking-wide mt-2"
+                        style={{ color: decisionColor }}
+                    >
+                        {decisionLine}
+                    </motion.p>
+                    <p className="text-[13.5px] mt-3 max-w-md leading-relaxed" style={{ color: "#c9c7c0" }}>
                         {v.summary}
                     </p>
                 </div>
                 <div className="text-right">
                     <div className="text-[10px] uppercase tracking-widest" style={{ color: "#6b6b73" }}>Confidence</div>
-                    <div className="text-2xl font-semibold" style={{ color: "#e8e6e1", fontFamily: "JetBrains Mono, monospace" }}>{v.confidence}%</div>
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: visible ? 1 : 0 }}
+                        transition={{ delay: 0.7, duration: 0.6 }}
+                        className="text-2xl font-semibold"
+                        style={{ color: "#e8e6e1", fontFamily: "JetBrains Mono, monospace" }}
+                    >
+                        {v.confidence}%
+                    </motion.div>
                 </div>
             </div>
 

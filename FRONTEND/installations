@@ -4,3 +4,4 @@ npm install lucide-react
 npm install -D tailwindcss postcss autoprefixer
 npx tailwindcss init -p
 npm install react-router-dom framer-motion axios
+npm install recharts
