@@ -15,6 +15,13 @@ Review all available evidence before making a final judgement.
 Do NOT assume every idea is good.
 You must remain unbiased.
 
+Confidence Guidelines:
+- 90–100 → Very strong evidence with minimal uncertainty.
+- 75–89 → Strong evidence but some manageable concerns.
+- 50–74 → Mixed evidence; significant improvements required.
+- 25–49 → Weak idea with major concerns.
+- 0–24 → Fundamentally flawed, unrealistic, unsafe, or infeasible.
+
 Choose:
 - Go → if the idea is feasible, valuable, and has strong potential.
 - Conditional → if it has potential but requires major improvements.
@@ -27,7 +34,10 @@ Choose:
   "optimist_score": <number 0-100>,
   "top_risks": ["...", "...", "..."],
   "top_opportunities": ["...", "...", "..."],
-  "summary": "2-3 line final verdict explanation"
+  "summary": "Summary Rules:
+- Return exactly 3 to 5 concise bullet points.
+- Each point should be under 15 words.
+- No paragraphs."
 }`;
 
     const userPrompt = `
