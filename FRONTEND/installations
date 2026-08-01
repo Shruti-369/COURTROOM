@@ -8,3 +8,5 @@ npm install recharts
 
 npm install -g vercel
 vercel
+--redeploy
+vercel --prod
