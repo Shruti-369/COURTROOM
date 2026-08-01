@@ -1,3 +1,9 @@
+![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)
+![Node.js](https://img.shields.io/badge/Node.js-Express-339933?logo=node.js)
+![MongoDB](https://img.shields.io/badge/MongoDB-Database-47A248?logo=mongodb)
+![JWT](https://img.shields.io/badge/Auth-JWT-black)
+![AI](https://img.shields.io/badge/Architecture-Multi--Agent_AI-gold)
+
 # ⚖️ The Courtroom — Multi-Agent AI Decision Intelligence Platform
 
 > **Before you decide, put it on trial.**
