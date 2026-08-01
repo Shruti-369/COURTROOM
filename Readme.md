@@ -30,7 +30,7 @@ The result is not simply another AI response, but a transparent decision-making 
 # 🌐 Live Demo
 
 Frontend:
-(Add your Vercel URL)
+https://frontend-555vi2eoz-shruti-s-projects-dad80e39.vercel.app/
 
 ---
 
